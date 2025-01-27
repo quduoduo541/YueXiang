@@ -1,6 +1,8 @@
 import { router } from '@kit.ArkUI'
 import { book, book_params, getBookInfoById } from '../api/BookApi'
+import { addGoodsToCar } from '../api/OrderApi'
 import { ApiResult } from '../utils/HttpCore'
+import MyTools from '../utils/MyTools'
 
 @Entry
 @ComponentV2
@@ -52,14 +54,24 @@ struct BookDetails {
                 .width(150)
                 .height(40)
                 .margin({left:20})
-                .onClick(()=>{})
+                .onClick(()=>{
+                  router.pushUrl({
+                    url:'pages/AddOrder',
+                    params:{
+                      productId:this.bookItem.id
+                  }
+                  })
+                })
               Button('加入购物车')
                 .borderRadius(8)
                 .width(150)
                 .height(40)
                 .margin({left:20})
                 .backgroundColor('#ff9a02')
-                .onClick(()=>{})
+                .onClick(async ()=>{
+                  const res= await addGoodsToCar({bookId:this.bookParams.bookId}) as ApiResult
+                  MyTools.alertMsg(res.data)
+                })
             }
             .margin({top:30})
 

@@ -3,6 +3,13 @@
     "pages/Index",
     "pages/RegisterPage",
     "pages/Home",
-    "pages/BookDetails"
+    "pages/BookDetails",
+    "pages/AddressManager",
+    "pages/AddAddress",
+    "pages/AddressMap",
+    "pages/AddOrder",
+    "pages/Pay",
+    "pages/MyOrder",
+    "pages/Youhuiquan"
   ]
 }
