@@ -11,6 +11,7 @@ export default struct ShopCar {
   @Local totalMoney:number=0
   //选中商品
   @Local bookChoiceList:goods[]=[]
+  @Param active:boolean=false
 
   aboutToAppear(): void {
     this.getCarData()

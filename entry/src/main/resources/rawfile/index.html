@@ -21,6 +21,7 @@
             <tr>
                 <td>
                     <input id="tipinput" />
+                    <button id="btn">确定</button>
                 </td>
             </tr>
         </table>
@@ -42,6 +43,9 @@
             input: "tipinput"
         };
 
+        //用户选择的地址
+        var selectAddress=''
+
         AMap.plugin(['AMap.PlaceSearch', 'AMap.AutoComplete'], function () {
             var auto = new AMap.AutoComplete(autoOptions);
             var placeSearch = new AMap.PlaceSearch({
@@ -51,9 +55,34 @@
             function select(e) {
                 placeSearch.setCity(e.poi.adcode);
                 placeSearch.search(e.poi.name);  //关键字查询查询
+                selectAddress=e.poi.district+e.poi.name
             }
         });
 
+        var btn = document.getElementById('btn')
+        btn.onclick= function () {
+            console.log(“按钮被点击了”)
+            if(selectAddress){
+                //把消息回传给hos
+                if(h5port){
+                    h5port.postMessage(selectAddress)
+                }
+            }
+        }
+
+        //跨源通信
+        //event代表传回来的事件对象
+        var h5port;
+        window.addEventListener('message', function(event) {
+            if (event.data == 'init_web_messageport') {
+                if (event.ports[0] != null) {
+                    h5port = event.ports[0];
+                    h5port.onmessage = function(event) {
+                        console.log(event.data); // 输出接收到的消息数据到控制台
+                    }
+                }
+            }
+        })
 
     </script>
 </body>

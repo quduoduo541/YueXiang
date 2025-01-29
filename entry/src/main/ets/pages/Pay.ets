@@ -1,6 +1,7 @@
 import { promptAction, router } from '@kit.ArkUI';
-import { payOrder, pay_params } from '../api/OrderApi';
+import { getMyAllYhq, payOrder, pay_params, yhq } from '../api/OrderApi';
 import { ApiResult } from '../utils/HttpCore';
+import Mytools from '../utils/MyTools';
 
 let customDialogId: number = 0
 
@@ -8,10 +9,18 @@ let customDialogId: number = 0
 @ComponentV2
 struct Pay {
   @Local totalMoney: number=(router.getParams() as pay_params)['totalMoney']
+  @Local showtotalMoney: number=(router.getParams() as pay_params)['totalMoney']
   @Local orderNo:string=(router.getParams() as pay_params)['orderNo']
   @Local payType:string=''
   @Local yhqId:number=-1
   @Local code:string=''
+  @Local yhqList:yhq[]=[]
+  @Local yhqMoney:number=0
+
+  async aboutToAppear(): Promise<void> {
+    const res=await getMyAllYhq() as ApiResult
+    this.yhqList=res.data
+  }
 
   @Builder
   payItem(img:Resource,bankName:string,payType:string){
@@ -78,7 +87,7 @@ struct Pay {
     Column(){
       Column(){
         Row(){
-          Text(`￥${this.totalMoney}`)
+          Text(`￥${this.showtotalMoney}`)
             .fontColor('#ffff0000')
             .fontWeight(FontWeight.Bold)
             .fontSize(35)
@@ -112,10 +121,56 @@ struct Pay {
               .borderRadius(20)
               .width('95%')
               .height('68%')
+
+              List(){
+                ForEach(this.yhqList,(item:yhq)=>{
+                  ListItem(){
+                    Row(){
+                      Row(){
+                        Image($r('app.media.youhuiquan1'))
+                          .height(25)
+                        Text(item.yhqDesc)
+                          .fontColor('#929397')
+                          .fontSize(17)
+                          .margin({left:10})
+                      }
+                      Blank()
+                      Row(){
+                        Text(`￥ ${item.yhqMoney}`)
+                          .fontColor('#ffff0000')
+                          .fontSize(18)
+                          .margin({right:10})
+                        Radio({group:'thqRadioGroup',value:'Radio1'})
+                          .height(22)
+                          .width(22)
+                          .onChange((isChecked:boolean)=>{
+                            if(isChecked){
+                              const payMoney=Mytools.minus(this.totalMoney,item.yhqMoney)
+                              this.showtotalMoney=payMoney<=0?0:payMoney
+                              this.yhqId=item.id
+                            }else {
+                              this.showtotalMoney=Mytools.plus(this.totalMoney,item.yhqMoney)
+                              this.yhqId=-1
+                            }
+                          })
+                      }
+                    }
+                    .borderRadius(20)
+                    .margin({top:10})
+                    .padding({left:10,right:10})
+                    .backgroundColor('#fff')
+                    .width('95%')
+                    .height(40)
+                  }
+                })
+              }
+              .alignListItem(ListItemAlign.Center)
             }
             .width('100%')
           }
         }
+        .height('68%')
+        .backgroundColor('#F1F2F6')
 
         Row(){
           Button('确认付款')
@@ -136,6 +191,11 @@ struct Pay {
                   fontColor:Color.Red,
                   action: async () => {
                     const res=await payOrder({orderNo:this.orderNo,type:this.payType,yhqId:this.yhqId}) as ApiResult
+                    if(this.showtotalMoney<=0){
+                      return router.replaceUrl({
+                        url:'pages/MyOrder'
+                      })
+                    }
                     this.code=res.data.wx_code
                     promptAction.openCustomDialog({
                       builder: () => {

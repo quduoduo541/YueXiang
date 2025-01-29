@@ -1,4 +1,5 @@
 import { webview } from '@kit.ArkWeb';
+import { router } from '@kit.ArkUI';
 
 @Entry
 @ComponentV2
@@ -12,16 +13,15 @@ struct AddressMap {
     Column(){
       Web({src:$rawfile('index.html'),controller:this.controller})
         .onPageEnd(()=>{
-          //创建Web消息端口,方法返回一个数组,数组第一个元素是当前本地的端口,第二个是发送给H5的
+          //1.创建Web消息端口,返回本地的端口和发送给H5的端口
           this.ports=this.controller.createWebMessagePorts(true)
-          //发送Web消息端口到HTML
-          //参数:要发送的消息名称,要发送的消息端口,接收该消息的URI
+          //2.发送端口1到HTML5
           this.controller.postMessage("init_web_messageport",[this.ports[1]],'*')
           //保存端口0到本地
           this.nativePort=this.ports[0]
           //监听H5回传来的消息
           this.nativePort?.onMessageEventExt((result)=>{
-
+              router.back({url:'pages/AddAddress',params:{address:result.getString()}})
           })
         })
     }

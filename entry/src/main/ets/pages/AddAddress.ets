@@ -1,4 +1,5 @@
 import { router } from '@kit.ArkUI'
+import { address_params } from '../api/BookApi'
 import { addAddress, address_item, address_list } from '../api/OrderApi'
 
 @Extend(TextInput) function myInputStyle(){
@@ -38,6 +39,13 @@ struct AddAddress {
       }else if(this.addressTag=='学校'){
         this.choiceFlag3=true
       }
+    }
+  }
+
+  onPageShow(): void {
+    const address=(router.getParams() as address_params)['address']
+    if(address){
+      this.address=address
     }
   }
 

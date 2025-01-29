@@ -62,6 +62,16 @@ export interface pay_params{
   orderNo:string
 }
 
+export interface yhq {
+  id: number;
+  yhqDesc: string;
+  startDate: string;
+  endDate: string;
+  yhqMoney: number;
+  useFlag: number;
+}
+
+
 export const getAddressByUserId=()=>{
   return httpcore.get('/hm/getAddress')
 }
@@ -92,4 +102,8 @@ export const payOrder=(data)=>{
 
 export const getOrderListByUserId=()=>{
   return httpcore.get('/hm/orderList')
+}
+
+export const getMyAllYhq=(params={})=>{
+  return httpcore.get('/hm/getMyAllYhq',params)
 }

@@ -13,6 +13,7 @@ class TokenUtils {
   }
 
   clearToken() {
+    PreferenceUtil.delPreferenceValue(CommonConfig.H_STORE,CommonConfig.LOGIN_TOKEN)
   }
 
   // 设置用户信息
@@ -25,6 +26,7 @@ class TokenUtils {
   }
 
   clearUser() {
+    PreferenceUtil.delPreferenceValue(CommonConfig.H_STORE,CommonConfig.LOGIN_USERID)
   }
 }
 

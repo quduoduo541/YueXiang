@@ -22,7 +22,6 @@ struct Index {
     const res =await login({username:this.userName,password:this.passWord}) as ApiResult
     if(res){
       hilog.info(0x0000,'ressss','%{public}s',JSON.stringify(res.data))
-      //TODO 未完成
       TokenUtils.setToken(res.data.token)
       TokenUtils.setUser(res.data.userId)
       router.replaceUrl({

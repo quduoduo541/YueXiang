@@ -1,6 +1,7 @@
 import { getUserInfoById, user_info } from "../api/UserApi"
 import { ApiResult } from "../utils/HttpCore"
 import { router } from "@kit.ArkUI"
+import TokenUtils from "../utils/TokenUtils"
 
 @ComponentV2
 export default struct UserPage {
@@ -64,7 +65,32 @@ export default struct UserPage {
     }
     .width('90%')
     .margin({top:topValue})
-    .onClick(()=>{})
+    .onClick(()=>{
+      if(itemName=='退出'){
+        AlertDialog.show({
+          title:'请确认',
+          message:'确认退出吗?',
+          autoCancel:true,
+          alignment:DialogAlignment.Center,
+          offset:{dx:0,dy:0},
+          primaryButton:{
+            value:'确定',
+            fontColor:Color.Red,
+            action: async () => {
+              TokenUtils.clearToken()
+              TokenUtils.clearUser()
+              router.replaceUrl({
+                url:'pages/Index'
+              })
+            }
+          },
+          secondaryButton: {
+            value: '取消',
+            action: () => {}
+          }
+        })
+      }
+    })
   }
 
   build() {

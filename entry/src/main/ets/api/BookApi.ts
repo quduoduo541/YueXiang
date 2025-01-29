@@ -30,6 +30,11 @@ export interface book_type {
 export interface book_params{
   bookId:number
 }
+
+export interface address_params{
+  address:string
+}
+
 export const getHomeBookDataList=(params)=>{
   return httpcore.get('/hm/index',params)
 }

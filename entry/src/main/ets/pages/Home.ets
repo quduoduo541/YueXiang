@@ -47,7 +47,7 @@ struct Home {
 
       //购物车
       TabContent() {
-        ShopCar()
+        ShopCar({active:this.currentPage==2})
       }.tabBar(this.TabBuilder('购物车', 2, $r('app.media.home_3_chose'),$r('app.media.home_3')))
 
       //我的
